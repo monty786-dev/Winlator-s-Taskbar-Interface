@@ -1,0 +1,20 @@
+# Put this file in .github/workflows/ of your GitHub repo (together with winshell.py and
+# winshell_setup.py) and run it from the Actions tab. It builds winshell.exe and
+# winshell_setup.exe (the installer, with winshell.exe inside) on a Windows runner.
+name: build-windows
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyinstaller
+      - run: pyinstaller --onefile --noconsole --name winshell winshell.py
+      - run: pyinstaller --onefile --noconsole --name winshell_setup --add-data "dist/winshell.exe;." winshell_setup.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: winshell-windows
+          path: dist/*.exe

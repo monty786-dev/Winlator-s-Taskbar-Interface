@@ -12,8 +12,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install pyinstaller
-      - run: pyinstaller --onefile --noconsole --name winshell winshell.py
-      - run: pyinstaller --onefile --noconsole --name winshell_setup --add-data "dist/winshell.exe;." winshell_setup.py
+      - run: pyinstaller --onefile --noconsole --winshell winshell.py
+      - run: pyinstaller --onefile --noconsole --winshell_setup --add-data "dist/winshell.exe;." winshell_setup.py
       - uses: actions/upload-artifact@v4
         with:
           name: winshell-windows

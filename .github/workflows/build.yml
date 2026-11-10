@@ -1,0 +1,52 @@
+
+create a build.yml file for built .exe file in github for winshell. py and winshell_setup.py file in main folder of github
+
+      
+       To build winshell.py and winshell_setup.py into Windows .exe files using GitHub Actions, create the workflow file at .github/workflows/build.yml in your repository.
+
+Workflow File (.github/workflows/build.yml)
+
+yaml
+name: Build Windows Executables
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller winshell
+
+      - name: Build winshell.exe with PyInstaller
+        run: |
+          pyinstaller --onefile --noconsole winshell.py
+
+      - name: Build winshell_setup.exe with PyInstaller
+        run: |
+          pyinstaller --onefile winshell_setup.py
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-executables
+          path: |
+            dist/winshell.exe
+            dist/winshell_setup.exe
